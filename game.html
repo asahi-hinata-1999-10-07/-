@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>フォーリアブラスト</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #222;
+      color: #fff;
+    }
+    h1 {
+      color: #ffcc00;
+    }
+    #score, #stage {
+      font-size: 1.5em;
+      margin: 10px;
+    }
+    .enemy {
+      width: 100px;
+      height: 100px;
+      margin: 15px;
+      cursor: pointer;
+    }
+    #nextStageBtn {
+      display: none;
+      margin-top: 20px;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      background: #28a745;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>フォーリアブラスト</h1>
+  <div id="stage">ステージ: 1</div>
+  <div id="score">スコア: 0</div>
+
+  <div id="enemyArea"></div>
+  <button id="nextStageBtn" onclick="nextStage()">次のステージへ</button>
+
+  <script>
+    let score = 0;
+    let stage = 1;
+    let enemiesLeft = 0;
+
+    // ステージごとの敵の数
+    const stageEnemies = {
+      1: 3,
+      2: 5,
+      3: 8
+    };
+
+    function loadStage(stageNum) {
+      document.getElementById("stage").textContent = "ステージ: " + stageNum;
+      document.getElementById("enemyArea").innerHTML = "";
+      document.getElementById("nextStageBtn").style.display = "none";
+
+      enemiesLeft = stageEnemies[stageNum] || 0;
+
+      for (let i = 0; i < enemiesLeft; i++) {
+        const enemy = document.createElement("img");
+        enemy.src = "monster.png"; // 画像ファイルを用意してね
+        enemy.className = "enemy";
+        enemy.onclick = function() { defeatEnemy(enemy); };
+        document.getElementById("enemyArea").appendChild(enemy);
+      }
+    }
+
+    function defeatEnemy(enemy) {
+      score++;
+      enemiesLeft--;
+      document.getElementById("score").textContent = "スコア: " + score;
+      enemy.style.display = "none";
+
+      if (enemiesLeft <= 0) {
+        document.getElementById("nextStageBtn").style.display = "inline-block";
+      }
+    }
+
+    function nextStage() {
+      stage++;
+      if (stageEnemies[stage]) {
+        loadStage(stage);
+      } else {
+        document.getElementById("enemyArea").innerHTML = "<h2>全ステージクリア！</h2>";
+        document.getElementById("nextStageBtn").style.display = "none";
+      }
+    }
+
+    // 最初のステージをロード
+    loadStage(stage);
+  </script>
+</body>
+</html>
